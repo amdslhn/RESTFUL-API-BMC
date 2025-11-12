@@ -39,6 +39,19 @@ class Bidan extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
+    public function lihatDaftarPasien()
+    {
+        return $this->pasien()->get([
+            'no_reg',
+            'nama',
+            'umur',
+            'alamat',
+            'gravida',
+            'paritas',
+            'abortus'
+        ]);
+    }
+    
     public function getJWTCustomClaims()
     {
         return []; // Tidak ada tambahan claim

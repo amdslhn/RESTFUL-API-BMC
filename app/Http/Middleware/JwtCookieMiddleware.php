@@ -13,7 +13,6 @@ class JwtCookieMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        // Ambil token dari cookie atau Authorization Bearer
         $token = $request->cookie('token') ?: $request->bearerToken();
 
         if (!$token) {
@@ -21,30 +20,28 @@ class JwtCookieMiddleware
         }
 
         try {
-            // Ambil payload token
             $payload = JWTAuth::setToken($token)->getPayload();
+            $role = $payload->get('role');
             $userId = $payload->get('sub');
 
-            // Coba cari di tabel Bidan dulu
-            $user = Bidan::find($userId);
-
-            // Kalau gak ketemu, coba cari di tabel Pasien
-            if (!$user) {
+            if ($role === 'bidan') {
+                $user = Bidan::find($userId);
+            } elseif ($role === 'pasien') {
                 $user = Pasien::find($userId);
+            } else {
+                return response()->json(['message' => 'Invalid token role'], 401);
             }
 
-            // Kalau tetap gak ada, token invalid
             if (!$user) {
-                return response()->json(['message' => 'Invalid token'], 401);
+                return response()->json(['message' => 'Invalid token user'], 401);
             }
 
-            // Simpan user ke request
             $request->merge([
                 'auth_user' => $user,
+                'auth_role' => $role,
             ]);
-
         } catch (JWTException $e) {
-            return response()->json(['message' => 'Token error: '.$e->getMessage()], 401);
+            return response()->json(['message' => 'Token error: ' . $e->getMessage()], 401);
         }
 
         return $next($request);

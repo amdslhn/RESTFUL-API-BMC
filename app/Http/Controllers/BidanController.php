@@ -6,9 +6,32 @@ use Illuminate\Http\Request;
 use App\Models\Pasien;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Services\BidanService;
 
 class BidanController extends Controller
 {
+    protected $bidanService;
+    public function __construct(BidanService $bidanService)
+    {
+        $this->bidanService = $bidanService;
+    }
+    public function lihatDaftarPasien(Request $request)
+    {
+        // Ambil user yang login (sudah didekode di JwtCookieMiddleware)
+        $bidan = $request->auth_user;
+
+        // Jalankan service-nya
+        $daftarPasien = $this->bidanService->lihatDaftarPasien($bidan);
+
+        // Response JSON
+        return response()->json([
+            'bidan' => [
+                // 'id' => $bidan->id,
+                'nama' => $bidan->nama,
+            ],
+            'daftar_pasien' => $daftarPasien
+        ]);
+    }
     public function registerPasien(Request $request)
     {
         $validator = Validator::make($request->all(), [

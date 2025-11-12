@@ -54,12 +54,14 @@ class AuthController extends Controller
         // 🔹 Klaim JWT
         $customClaims = $userType === 'pasien'
             ? [
-                'no_reg' => (string) $user->no_reg,
+                'sub' => (string) $user->no_reg, // <-- tambahkan sub secara eksplisit
+                'role' => 'pasien',
                 'username' => $user->username,
                 'nama' => $user->nama,
             ]
             : [
-                'id' => (string) $user->id,
+                'sub' => (string) $user->id, // <-- tambahkan sub secara eksplisit
+                'role' => 'bidan',
                 'username' => $user->username,
                 'nama' => $user->nama,
             ];

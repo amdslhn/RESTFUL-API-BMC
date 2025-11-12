@@ -19,8 +19,9 @@ return new class extends Migration
             $table->boolean('ketuban_pecah')->nullable()->default(false);
             $table->decimal('pasien_no_reg')->nullable();
             $table->string('partograf_id', 25)->nullable();
+            $table->string('status', 20)->default('tidak_aktif');
         });
-        DB::statement("alter table \"persalinan\" add column \"status\" status_enum null default 'nonaktif'");
+        
     }
 
     /**

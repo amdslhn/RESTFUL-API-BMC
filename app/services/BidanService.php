@@ -54,4 +54,8 @@ class BidanService
             'bidan_id' => $bidanId, // dikaitkan ke bidan yang sedang login
         ]);
     }
+    public function lihatDaftarPasien(Bidan $bidan)
+    {
+        return $bidan->lihatDaftarPasien();
+    }
 }
