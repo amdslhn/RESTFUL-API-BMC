@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('tanggal_jam_mules')->nullable();
             $table->boolean('ketuban_pecah')->default(false);
             $table->string('pasien_no_reg', 25)->nullable();
-            $table->enum('status', ['aktif', 'tidak_aktif', 'selesai'])->default('aktif');
+            $table->enum('status', ['aktif', 'tidak_aktif', 'selesai'])->default('tidak_aktif');
             $table->timestamps();
         });
     }

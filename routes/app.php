@@ -8,6 +8,7 @@ use App\Http\Middleware\JwtCookieMiddleware;
 use App\Http\Middleware\BidanMiddleware;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PasienController;
+use App\Http\Controllers\PersalinanController;
 
 
 // Route::post('/login', [AuthController::class, 'login']);
@@ -23,6 +24,10 @@ Route::middleware([JwtCookieMiddleware::class])->group(function () {
     Route::put('/profile/ubah-password', [ProfileController::class, 'updatePassword']);
     // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Persalinan
+    Route::get('/persalinan', [PersalinanController::class, 'index']);
+    Route::put('/persalinan/{id}/status', [PersalinanController::class, 'ubahStatus']);
 });
 
 Route::middleware([JwtCookieMiddleware::class, BidanMiddleware::class])->group(function () {

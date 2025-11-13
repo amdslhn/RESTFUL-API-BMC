@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('id', 25)->primary();
             $table->timestamp('tanggal_jam_rawat')->nullable();
             $table->timestamp('tanggal_jam_mules')->nullable();
-            $table->boolean('ketuban_pecah')->nullable()->default(false);
-            $table->string('pasien_no_reg')->nullable();
-            $table->string('partograf_id', 25)->nullable();
+            $table->boolean('ketuban_pecah')->default(false);
+            $table->string('pasien_no_reg', 25)->nullable();
+            $table->enum('status', ['aktif', 'tidak_aktif', 'selesai'])->default('tidak_aktif');
+            $table->timestamps();
         });
-        DB::statement("alter table \"persalinan\" add column \"status\" status_enum null default 'nonaktif'");
     }
 
     /**

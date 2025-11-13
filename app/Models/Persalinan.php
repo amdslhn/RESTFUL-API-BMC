@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 class Persalinan extends Model
 {
@@ -13,7 +14,7 @@ class Persalinan extends Model
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = false;
+    public $timestamps = true; // karena di migration kamu pakai timestamps()
 
     protected $fillable = [
         'id',
@@ -21,8 +22,7 @@ class Persalinan extends Model
         'tanggal_jam_rawat',
         'tanggal_jam_mules',
         'ketuban_pecah',
-        'status', // string aja (aktif, tidak aktif, selesai)
-        'partograf_id',
+        'status',
     ];
 
     protected $casts = [
@@ -36,12 +36,15 @@ class Persalinan extends Model
         return $this->belongsTo(Pasien::class, 'pasien_no_reg', 'no_reg');
     }
 
-    // 🔹 Helper: ubah status persalinan
+    /**
+     * 🔹 Method ubahStatus()
+     * Memastikan status valid sesuai ENUM di DB
+     */
     public function ubahStatus(string $status)
     {
         $allowed = ['aktif', 'tidak_aktif', 'selesai'];
         if (!in_array($status, $allowed)) {
-            throw new \InvalidArgumentException("Status tidak valid.");
+            throw new InvalidArgumentException("Status tidak valid. Pilihan: " . implode(', ', $allowed));
         }
 
         $this->status = $status;
