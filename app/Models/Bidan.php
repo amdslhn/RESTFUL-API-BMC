@@ -66,31 +66,44 @@ class Bidan extends Authenticatable implements JWTSubject
         ]);
     }
 
+
     public function mulaiPersalinan(Pasien $pasien)
-    {
-        if ($pasien->bidan_id !== $this->id) {
-            throw ValidationException::withMessages([
-                'pasien' => 'Pasien ini bukan pasien Anda.'
-            ]);
-        }
-
-        $existing = Persalinan::where('pasien_id', $pasien->id)
-            ->where('status', '!=', 'selesai')
-            ->first();
-
-        if ($existing) {
-            throw ValidationException::withMessages([
-                'persalinan' => 'Pasien ini sudah memiliki persalinan aktif.'
-            ]);
-        }
-
-        return Persalinan::create([
-            'pasien_id' => $pasien->id,
-            // mempertahankan nama field seperti di kode awal -- sesuaikan jika migration berbeda
-            'tanggalAwalRawat' => now(),
-            'status' => 'aktif',
+{
+    if ($pasien->bidan_id !== $this->id) {
+        throw ValidationException::withMessages([
+            'pasien' => 'Pasien ini bukan pasien Anda.'
         ]);
     }
+
+    // Cek apakah pasien sudah punya persalinan aktif
+    $existing = Persalinan::where('pasien_no_reg', $pasien->no_reg)
+        ->where('status', 'aktif')
+        ->first();
+
+    if ($existing) {
+        throw ValidationException::withMessages([
+            'persalinan' => 'Pasien ini sudah memiliki persalinan aktif.'
+        ]);
+    }
+
+    // Generate ID unik misalnya: Persalinan001, Persalinan002, dst.
+    $lastPersalinan = Persalinan::orderBy('id', 'desc')->first();
+    $nextNumber = $lastPersalinan
+        ? (intval(preg_replace('/\D/', '', $lastPersalinan->id)) + 1)
+        : 1;
+    $id = 'Persalinan' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+    // Buat persalinan baru
+    return Persalinan::create([
+        'id' => $id,
+        'pasien_no_reg' => $pasien->no_reg,
+        'tanggal_jam_rawat' => now(),
+        'tanggal_jam_mules' => null,
+        'ketuban_pecah' => false,
+        'status' => 'aktif',
+    ]);
+}
+
 
     public function kirimPesan(Pasien $pasien, string $isiPesan)
     {

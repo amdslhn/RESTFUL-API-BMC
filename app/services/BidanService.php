@@ -62,11 +62,10 @@ class BidanService
         return $bidan->lihatDaftarPasien();
     }
 
-    //Mulai persalinan
     public function mulaiPersalinan(Bidan $bidan, Pasien $pasien)
-    {
-        return $bidan->mulaiPersalinan($pasien);
-    }
+{
+    return $bidan->mulaiPersalinan($pasien);
+}
 
     public function kirimPesan(Bidan $bidan, Pasien $pasien, string $isiPesan)
     {

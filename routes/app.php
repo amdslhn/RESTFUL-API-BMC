@@ -28,4 +28,5 @@ Route::middleware([JwtCookieMiddleware::class])->group(function () {
 Route::middleware([JwtCookieMiddleware::class, BidanMiddleware::class])->group(function () {
     Route::post('/bidan/register-pasien', [BidanController::class, 'registerPasien']);
     Route::get('/bidan/pasien', [BidanController::class, 'lihatDaftarPasien']);
+    Route::post('/bidan/pasien/{pasienId}/mulai-persalinan', [BidanController::class, 'mulaiPersalinan']);
 });

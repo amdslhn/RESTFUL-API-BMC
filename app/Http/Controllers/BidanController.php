@@ -99,26 +99,26 @@ class BidanController extends Controller
             'pasien' => $pasien
         ]);
     }
-     public function mulaiPersalinan(Request $request, $pasienId)
-    {
-        $bidan = $request->auth_user;
-        $pasien = Pasien::find($pasienId);
+    public function mulaiPersalinan(Request $request, $pasienId)
+{
+    $bidan = $request->auth_user;
+    $pasien = Pasien::find($pasienId);
 
-        if (!$pasien) {
-            return response()->json(['error' => 'Pasien tidak ditemukan.'], 404);
-        }
-
-        try {
-            $persalinan = $this->bidanService->mulaiPersalinan($bidan, $pasien);
-
-            return response()->json([
-                'message' => 'Persalinan dimulai untuk pasien ini.',
-                'persalinan' => $persalinan
-            ], 201);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        }
+    if (!$pasien) {
+        return response()->json(['error' => 'Pasien tidak ditemukan.'], 404);
     }
+
+    try {
+        $persalinan = $this->bidanService->mulaiPersalinan($bidan, $pasien);
+        return response()->json([
+            'message' => 'Persalinan dimulai untuk pasien ini.',
+            'persalinan' => $persalinan
+        ], 201);
+    } catch (ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422);
+    }
+}
+
 
     public function kirimPesan(Request $request, $pasienId)
     {
