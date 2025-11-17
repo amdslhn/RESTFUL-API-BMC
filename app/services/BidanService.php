@@ -6,6 +6,8 @@ use App\Models\Bidan;
 use App\Models\Pasien;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
+
 
 class BidanService
 {
@@ -62,10 +64,11 @@ class BidanService
         return $bidan->lihatDaftarPasien();
     }
 
-    public function mulaiPersalinan(Bidan $bidan, Pasien $pasien)
+   public function mulaiPersalinan(Request $request, Bidan $bidan, Pasien $pasien)
 {
-    return $bidan->mulaiPersalinan($pasien);
+    return $bidan->mulaiPersalinan($request, $pasien);
 }
+
 
     public function kirimPesan(Bidan $bidan, Pasien $pasien, string $isiPesan)
     {

@@ -22,6 +22,7 @@ class Persalinan extends Model
         'tanggal_jam_rawat',
         'tanggal_jam_mules',
         'ketuban_pecah',
+        'tanggal_jam_ketuban_pecah',
         'status',
     ];
 
@@ -29,6 +30,7 @@ class Persalinan extends Model
         'ketuban_pecah' => 'boolean',
         'tanggal_jam_rawat' => 'datetime',
         'tanggal_jam_mules' => 'datetime',
+        'tanggal_jam_ketuban_pecah' => 'datetime',
     ];
 
     public function pasien()

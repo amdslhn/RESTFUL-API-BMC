@@ -101,7 +101,7 @@ class BidanController extends Controller
     }
     public function mulaiPersalinan(Request $request, $pasienId)
 {
-    $bidan = $request->auth_user;
+    $bidan = $request->auth_user; // dari JWT middleware
     $pasien = Pasien::find($pasienId);
 
     if (!$pasien) {
@@ -109,13 +109,17 @@ class BidanController extends Controller
     }
 
     try {
-        $persalinan = $this->bidanService->mulaiPersalinan($bidan, $pasien);
+        $hasil = $this->bidanService->mulaiPersalinan($request, $bidan, $pasien);
+
         return response()->json([
-            'message' => 'Persalinan dimulai untuk pasien ini.',
-            'persalinan' => $persalinan
+            'message' => 'Persalinan berhasil dimulai.',
+            'data' => $hasil,
         ], 201);
+
     } catch (ValidationException $e) {
-        return response()->json(['errors' => $e->errors()], 422);
+        return response()->json([
+            'errors' => $e->errors()
+        ], 422);
     }
 }
 
