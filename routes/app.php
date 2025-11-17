@@ -36,6 +36,9 @@ Route::middleware([JwtCookieMiddleware::class])->group(function () {
     // Konten Edukasi untuk Pasien
     Route::get('/konten-edukasi', [KontenEdukasiController::class, 'index']);
     Route::get('/konten-edukasi/{id-konten}', [KontenEdukasiController::class, 'show']);
+    Route::get('/partograf/{id}/catatan', [CatatanPartografController::class, 'getCatatanByPartograf']);
+
+
 });
 
 Route::middleware([JwtCookieMiddleware::class, BidanMiddleware::class])->group(function () {
