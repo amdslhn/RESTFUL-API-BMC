@@ -15,10 +15,6 @@ class PersalinanController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * GET /api/persalinan
-     * Tampilkan daftar persalinan, otomatis filter kalau pasien login
-     */
     public function index(Request $request)
     {
         $user = $request->auth_user;
