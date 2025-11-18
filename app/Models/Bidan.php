@@ -55,13 +55,16 @@ class Bidan extends Authenticatable implements JWTSubject
 
     public function lihatDaftarPasien()
 {
-    // Ambil pasien + persalinan terbaru pakai eager loading
-    $pasienList = $this->pasien()->with(['persalinan' => function($q) {
-        $q->latest('tanggal_jam_rawat')->limit(1);
-    }])->get();
+    $pasienList = $this->pasien()->with([
+        'persalinan' => function($q) {
+            $q->latest('tanggal_jam_rawat')
+              ->limit(1)
+              ->with('partograf'); 
+        }
+    ])->get();
 
     return $pasienList->map(function($pasien) {
-        $persalinanTerbaru = $pasien->persalinan->first(); // karena limit 1, cuma 1 record
+        $persalinanTerbaru = $pasien->persalinan->first();
 
         return [
             'no_reg' => $pasien->no_reg,
@@ -71,6 +74,7 @@ class Bidan extends Authenticatable implements JWTSubject
             'gravida' => $pasien->gravida,
             'paritas' => $pasien->paritas,
             'abortus' => $pasien->abortus,
+
             'persalinan' => $persalinanTerbaru ? [
                 'id' => $persalinanTerbaru->id,
                 'tanggal_jam_rawat' => $persalinanTerbaru->tanggal_jam_rawat,
@@ -78,10 +82,12 @@ class Bidan extends Authenticatable implements JWTSubject
                 'ketuban_pecah' => $persalinanTerbaru->ketuban_pecah,
                 'tanggal_jam_ketuban_pecah' => $persalinanTerbaru->tanggal_jam_ketuban_pecah,
                 'status' => $persalinanTerbaru->status,
-            ] : null
+            ] : null,
+            'partograf_id' => $persalinanTerbaru->partograf->id ?? null,
         ];
     });
 }
+
 
 
 

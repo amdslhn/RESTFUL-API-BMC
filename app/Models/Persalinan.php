@@ -54,4 +54,9 @@ class Persalinan extends Model
 
         return $this;
     }
+    public function partograf()
+{
+    return $this->hasOne(Partograf::class, 'persalinan_id', 'id');
+}
+
 }
