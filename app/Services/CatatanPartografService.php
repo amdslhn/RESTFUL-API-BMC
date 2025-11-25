@@ -68,4 +68,12 @@ class CatatanPartografService
     return $all->isEmpty() ? null : $all;
 }
 
+public function getByPartografId(string $partografId)
+    {
+        return CatatanPartograf::with('kontraksi')
+            ->where('partograf_id', $partografId)
+            ->orderBy('waktu_catat', 'asc')
+        ->get();
+    }
+
 }
