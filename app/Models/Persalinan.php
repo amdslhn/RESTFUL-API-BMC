@@ -62,8 +62,29 @@ class Persalinan extends Model
         throw new InvalidArgumentException("Status tidak valid.");
     }
 
-    // update status
+    // UPDATE STATUS
     $this->status = $status;
+
+    // ============================================
+    // UPDATE FIELD RAWAT / MULES / KETUBAN
+    // HANYA JIKA ADA DI REQUEST
+    // ============================================
+    $updatable = [
+        'tanggal_jam_rawat',
+        'tanggal_jam_mules',
+        'ketuban_pecah',
+        'tanggal_jam_ketuban_pecah'
+    ];
+
+    foreach ($updatable as $field) {
+        if (request()->has($field)) {
+            $this->{$field} = request()->input($field);
+        }
+    }
+
+    // ============================================
+    // STATUS SELESAI → WAJIB DATA BAYI
+    // ============================================
     if ($status === 'selesai') {
 
         if (!$dataBayi) {
@@ -85,7 +106,7 @@ class Persalinan extends Model
             }
         }
 
-        // simpan ke kolom tabel
+        // SIMPAN DATA BAYI
         $this->tanggal_jam_waktu_bayi_lahir = $dataBayi['tanggal_jam_waktu_bayi_lahir'];
         $this->berat_badan = $dataBayi['berat_badan'];
         $this->panjang_badan = $dataBayi['panjang_badan'];
@@ -94,11 +115,12 @@ class Persalinan extends Model
         $this->jenis_kelamin = $dataBayi['jenis_kelamin'];
     }
 
-    // HANYA UPDATE — AMAN
+    // SIMPAN
     $this->save();
 
     return $this;
 }
+
 
 
     public function partograf()
