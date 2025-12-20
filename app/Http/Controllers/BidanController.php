@@ -139,4 +139,29 @@ class BidanController extends Controller
         }
     }
 
+    public function updateToken(Request $request)
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        
+        // Ambil bidan yang sedang login (dari token JWT)
+        // Pastikan middleware auth:bidan aktif di route
+        $bidan = auth('bidan')->user();
+        
+        if (!$bidan) {
+             return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        // Simpan token Expo ke database
+        $bidan->update(['fcm_token' => $request->token]);
+
+        return response()->json(['message' => 'Token notifikasi berhasil disimpan']);
+    }
+
 }

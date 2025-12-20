@@ -20,7 +20,7 @@ class Bidan extends Authenticatable implements JWTSubject
     public $incrementing = false;
     public $timestamps = false;
 
-    protected $fillable = [ 'id', 'username', 'nama', 'password' ];
+    protected $fillable = [ 'id', 'username', 'nama', 'password', 'fcm_token' ];
     protected $hidden = [ 'password' ];
 
     // --- RELASI ---

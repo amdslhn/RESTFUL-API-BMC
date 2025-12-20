@@ -69,6 +69,8 @@ Route::middleware([JwtCookieMiddleware::class, BidanMiddleware::class])->group(f
 
     Route::post('/darurat/{id}/konfirmasi', [BidanController::class, 'konfirmasiDarurat']);
 
+    Route::post('/bidan/update-token', [BidanController::class, 'updateToken']);
+
     // Konten Edukasi
     Route::post('/konten-edukasi', [KontenEdukasiController::class, 'store']);
     Route::delete('/konten-edukasi/{id}', [KontenEdukasiController::class, 'destroy']);
