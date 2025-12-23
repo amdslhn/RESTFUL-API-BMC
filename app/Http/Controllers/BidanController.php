@@ -90,7 +90,7 @@ class BidanController extends Controller
     }
 
     $bidan = $request->auth_user;
-    
+
     if ($request->filled('no_reg')) {
         $noReg = $request->no_reg;
     } else {
@@ -108,7 +108,7 @@ class BidanController extends Controller
             $increment = '01';
         }
 
-        $noReg = $tahun . $increment . '03';
+        $noReg = $tahun . $increment . '3';
     }
 
     $data = $request->only([
