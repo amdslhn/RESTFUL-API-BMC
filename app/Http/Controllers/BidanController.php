@@ -7,6 +7,8 @@ use App\Models\Pasien;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Services\BidanService;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class BidanController extends Controller
 {
@@ -71,36 +73,58 @@ class BidanController extends Controller
         ]);
     }
     public function registerPasien(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'no_reg'   => 'required|string|unique:pasien,no_reg',
-            'nama'     => 'required|string|max:100',
-            'password' => 'nullable|string|min:6',
-            'alamat'   => 'required|string|max:60',
-            'umur'     => 'required|numeric',
-            'gravida'  => 'required|numeric',
-            'paritas'  => 'required|numeric',
-            'abortus'  => 'required|numeric',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'no_reg'   => 'nullable|string|unique:pasien,no_reg',
+        'nama'     => 'required|string|max:100',
+        'password' => 'nullable|string|min:6',
+        'alamat'   => 'required|string|max:60',
+        'umur'     => 'required|numeric',
+        'gravida'  => 'required|numeric',
+        'paritas'  => 'required|numeric',
+        'abortus'  => 'required|numeric',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
+    }
+
+    $bidan = $request->auth_user;
+    
+    if ($request->filled('no_reg')) {
+        $noReg = $request->no_reg;
+    } else {
+        $tahun = Carbon::now()->year;
+
+        $lastPasien = Pasien::where('no_reg', 'like', $tahun.'%')
+            ->orderBy('no_reg', 'desc')
+            ->first();
+
+        if ($lastPasien) {
+            // ambil increment (2 digit di tengah)
+            $lastIncrement = (int) substr($lastPasien->no_reg, 4, 2);
+            $increment = str_pad($lastIncrement + 1, 2, '0', STR_PAD_LEFT);
+        } else {
+            $increment = '01';
         }
 
-        $bidan = $request->auth_user;
-
-        $data = $request->only([
-            'no_reg', 'nama', 'password', 'alamat', 'umur',
-            'gravida', 'paritas', 'abortus'
-        ]);
-
-        $pasien = $this->bidanService->tambahPasien($data, $bidan);
-
-        return response()->json([
-            'message' => 'Pasien berhasil didaftarkan',
-            'pasien' => $pasien
-        ]);
+        $noReg = $tahun . $increment . '03';
     }
+
+    $data = $request->only([
+        'nama', 'password', 'alamat', 'umur',
+        'gravida', 'paritas', 'abortus'
+    ]);
+
+    $data['no_reg'] = $noReg;
+
+    $pasien = $this->bidanService->tambahPasien($data, $bidan);
+
+    return response()->json([
+        'message' => 'Pasien berhasil didaftarkan',
+        'pasien'  => $pasien
+    ]);
+}
     public function mulaiPersalinan(Request $request, $pasienId)
 {
     $bidan = $request->auth_user; // dari JWT middleware
