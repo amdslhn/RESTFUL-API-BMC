@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('konten_edukasi', function (Blueprint $table) {
             $table->string('id', 25)->primary();
-            $table->string('judul_konten', 40);
+            $table->string('judul_konten', 255);
             $table->text('isi_konten');
             $table->string('bidan_id', 25)->nullable();
             $table->timestamp('created_at')->nullable();
